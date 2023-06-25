@@ -1,8 +1,5 @@
 import itertools
 import random
-from re import S
-from secrets import choice
-from telnetlib import SE
 
 
 class Minesweeper():
