@@ -220,14 +220,29 @@ class MinesweeperAI():
         self.knowledge.append(Sentence(surrounding_cells, count))
 
         # 4) mark any additional cells as safe or as mines if it can be concluded based on the AI's knowledge base
-
         for sentence in self.knowledge:
             for cell in sentence.cells:
-                ...
-
+                if sentence.count == 0:
+                    self.safes.add(cell)
+                elif sentence.count == len(sentence.cells):
+                    self.mines.add(cell)
+        
         # 5) add any new sentences to the AI's knowledge base if they can be inferred from existing knowledge
+        for sentence1 in self.knowledge:
+            for sentence2 in self.knowledge:
+                if (sentence1 == sentence2) or (len(sentence1.cells) == 0) or (len(sentence2.cells) == 0):
+                    continue
 
-        #TODO
+                elif sentence2.cells.issubset(sentence1.cells):
+                    sentence = Sentence((sentence1.cells - sentence2.cells), (sentence1.count - sentence2.count))
+                    if sentence not in self.knowledge:
+                        self.knowledge.append(sentence)
+                
+                elif sentence1.cells.issubset(sentence2.cells):
+                    sentece = Sentence((sentence2.cells - sentence1.cells), (sentence2.count - sentence1.count))
+                    if sentence not in self.knowledge:
+                        self.knowledge.append(sentence)
+
 
     def make_safe_move(self):
         """
@@ -238,7 +253,7 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        safes = self.safes - self.moves_made
+        safes = list(self.safes - self.moves_made)
         if safes:
             return random.choice(safes)
         return None
