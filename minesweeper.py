@@ -198,7 +198,7 @@ class MinesweeperAI():
         self.safes.add(cell)
 
         # 3) add a new Sentence() to self.knowledge based on the value of 'cell' and 'count'
-        surrounding_cells = []
+        surrounding_cells = set()
         
         for i in range(cell[0] - 1, cell[0] + 2):
             for j in range(cell[1] - 1, cell[1] + 2):
@@ -213,7 +213,7 @@ class MinesweeperAI():
                         count -= 1                          #  reduce count without adding it to the surrounding cells
 
                     else:                                   # if the surrounding cell is not a mine then add it surrounding cells
-                        surrounding_cells.append((i, j))
+                        surrounding_cells.add((i, j))
 
         # add to the knowledge base the surrounding cells that are not mines with the number of those cells that could be mines
 
