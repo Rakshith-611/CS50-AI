@@ -250,7 +250,23 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        raise NotImplementedError
+        # keep track of moves that we can make
+        available_moves = []
+
+        # for all the cells in the minesweeper board
+        for i in range(self.height):
+            for j in range(self.width):
+                
+                # if the move is not a known mine and not already made
+                if (i, j) not in self.mines and (i, j) not in self.moves_made:
+                    available_moves.append((i, j))
+            
+        # if there are no moves to be made
+        if len(available_moves) != 0:
+            return random.choice(available_moves)
+        else:
+            return None
+
 
 ai = MinesweeperAI()
 ai.add_knowledge((0,0), 3)
