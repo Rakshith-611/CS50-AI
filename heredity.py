@@ -149,7 +149,11 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
+    
+    # for each person in the list of probabilities
     for person in probabilities:
+
+        # update gene probability for one, two or no genes
         if person in one_gene:
             probabilities[person]['gene'][1] += p
         elif person in two_genes:
@@ -157,6 +161,7 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
         else:
             probabilities[person]['gene'][0] += p
 
+        # update trait probability if present or not
         if person in have_trait:
             probabilities[person]['trait'][True] += p
         else:
