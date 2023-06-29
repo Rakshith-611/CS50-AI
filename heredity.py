@@ -139,7 +139,65 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
-    raise NotImplementedError
+    
+    # set initial joint probability as 1 (for *= operation)
+    joint_probability = 1
+
+    # for each person in people
+    for person in people:
+
+        # get the mother and father for the person
+        mother = people[person]["mother"]
+        father = people[person]["father"]
+
+        # number of genes the person has
+        gene_count = 2 if person in two_genes else 1 if person in one_gene else 0
+        # whether the person exhibits the trait or not
+        shows_trait = person in have_trait
+
+        # probability of the person exhibiting the trait
+        person_probability = 1
+
+        # gene probability updates
+        # if the person has no parents mentioned
+        if not mother and not father:
+            # multiply gene probability to the persons probability of exhibiting the trait
+            person_probability *= PROBS["gene"][gene_count]
+
+        # else if the person has parents, we have to get gene probability with mutation from mother and father
+        else:
+            # gene probability from mother
+            if mother in two_genes:
+                mother_probability = 1 - PROBS["mutation"]
+            elif mother in one_gene:
+                mother_probability = 0.5
+            else:
+                mother_probability = PROBS["mutation"]
+
+            # gene probability from father
+            if father in two_genes:
+                father_probability = 1 - PROBS["mutation"]
+            elif father in one_gene:
+                father_probability = 0.5
+            else:
+                father_probability = PROBS["mutation"]
+
+            # for person themselves
+            if gene_count == 2:
+                person_probability *= mother_probability * father_probability
+            elif gene_count == 1:
+                person_probability *= (mother_probability * (1 - father_probability)) + ((1 - mother_probability) * father_probability)
+            else:
+                person_probability *= (1 - mother_probability) * (1 - father_probability)
+
+        # trait probability update
+        person_probability *= PROBS["trait"][gene_count][shows_trait]
+
+        # finally update joint probability
+        joint_probability *= person_probability
+
+    # return the final joint probability
+    return joint_probability
 
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
